@@ -143,12 +143,12 @@
 			};
 
 			chan@4a {
-				label = "bat_therm";
+				label = "batt_therm_qrd";              //PU100_B4250_100K
 				reg = <0x4a>;
 				qcom,decimation = <2>;
 				qcom,pre-div-channel-scaling = <0>;
 				qcom,calibration-type = "ratiometric";
-				qcom,scale-function = <17>;
+				qcom,scale-function = <22>;
 				qcom,hw-settle-time = <0>;
 				qcom,fast-avg-setup = <0>;
 				qcom,cal-val = <0>;
@@ -323,6 +323,16 @@
 			qcom,hw-connector-mitigation;
 			qcom,connector-internal-pull-kohm = <100>;
 
+			// pony.ma, DATE20190404, charge config, DATE20190404-01 START
+			qcom,chg-term-current-ma = <50>;
+			qcom,fcc-max-ua = <1000000>;   //fast current charge in battery profile config
+			qcom,usb-icl-ua = <900000>;		//usb input limit
+			qcom,fv-max-uv = <4400000>;		//float voltage in battery profile config
+			qcom,otg-cl-ua = <500000>;		//otg limit current
+			qcom,float-option = <2>;		//1,DCP;2,SDP;3,disable charging;4,suspend usb input
+			qcom,hvdcp-disable;
+			// pony.ma, DATE20190404-01 END
+
 			qcom,thermal-mitigation
 				= <3000000 2500000 2000000 1500000
 					1000000 500000>;
@@ -476,6 +486,12 @@
 			smb5_vbus: qcom,smb5-vbus {
 				regulator-name = "smb5-vbus";
 			};
+			
+			// pony.ma, DATE20190404, for typec, Bugpony.ma START
+			Smb5_vconn: qcom,smb5-vconn {
+				regulator-name = "smb5-vconn";
+			};
+			// pony.ma, Bugpony.ma END
 		};
 
 		pmi632_qg: qpnp,qg {
@@ -488,6 +504,12 @@
 			qcom,linearize-soc;
 			qcom,qg-vadc = <&pmi632_vadc>;
 			qcom,pmic-revid = <&pmi632_revid>;
+
+			// pony.ma, DATE20190404, qg config, DATE20190404-01 START
+			qcom,vbatt-cutoff-mv = <3400>;
+			qcom,vbatt-empty-mv = <3200>;
+			qcom,vbatt-empty-cold-mv = <3000>;
+			// pony.ma, DATE20190404-01 END
 
 			qcom,qgauge@4800 {
 				status = "okay";
@@ -596,6 +618,7 @@
 		pmi632_rgb: qcom,leds@d000 {
 			compatible = "qcom,tri-led";
 			reg = <0xd000 0x100>;
+			bright-scale = <7>;
 			red {
 				label = "red";
 				pwms = <&pmi632_pwm 0 1000000>;
@@ -671,10 +694,10 @@
 			pmi632_flash0: qcom,flash_0 {
 				label = "flash";
 				qcom,led-name = "led:flash_0";
-				qcom,max-current = <1500>;
+				qcom,max-current = <500>;
 				qcom,default-led-trigger = "flash0_trigger";
 				qcom,id = <0>;
-				qcom,current-ma = <1000>;
+				qcom,current-ma = <500>;
 				qcom,duration-ms = <1280>;
 				qcom,ires-ua = <12500>;
 				qcom,hdrm-voltage-mv = <400>;
@@ -684,10 +707,10 @@
 			pmi632_flash1: qcom,flash_1 {
 				label = "flash";
 				qcom,led-name = "led:flash_1";
-				qcom,max-current = <1500>;
+				qcom,max-current = <500>;
 				qcom,default-led-trigger = "flash1_trigger";
 				qcom,id = <1>;
-				qcom,current-ma = <1000>;
+				qcom,current-ma = <500>;
 				qcom,duration-ms = <1280>;
 				qcom,ires-ua = <12500>;
 				qcom,hdrm-voltage-mv = <400>;
@@ -697,10 +720,10 @@
 			pmi632_torch0: qcom,torch_0 {
 				label = "torch";
 				qcom,led-name = "led:torch_0";
-				qcom,max-current = <500>;
+				qcom,max-current = <100>;
 				qcom,default-led-trigger = "torch0_trigger";
 				qcom,id = <0>;
-				qcom,current-ma = <300>;
+				qcom,current-ma = <100>;
 				qcom,ires-ua = <12500>;
 				qcom,hdrm-voltage-mv = <400>;
 				qcom,hdrm-vol-hi-lo-win-mv = <100>;
@@ -712,7 +735,7 @@
 				qcom,max-current = <500>;
 				qcom,default-led-trigger = "torch1_trigger";
 				qcom,id = <1>;
-				qcom,current-ma = <300>;
+				qcom,current-ma = <100>;
 				qcom,ires-ua = <12500>;
 				qcom,hdrm-voltage-mv = <400>;
 				qcom,hdrm-vol-hi-lo-win-mv = <100>;
@@ -741,8 +764,8 @@
 		cell-index = <0>;
 		compatible = "qcom,camera-flash";
 		qcom,flash-type = <1>;
-		qcom,flash-source = <&pmi632_flash0 &pmi632_flash1>;
-		qcom,torch-source = <&pmi632_torch0 &pmi632_torch1>;
+		qcom,flash-source = <&pmi632_flash0>;
+		qcom,torch-source = <&pmi632_torch0>;
 		qcom,switch-source = <&pmi632_switch0>;
 	};
 };

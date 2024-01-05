@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -16,8 +16,6 @@
 
 &blsp1_uart2 {
 	status = "ok";
-	pinctrl-names = "default";
-	pinctrl-0 = <&uart_console_active>;
 };
 
 &sdhc_1 {
@@ -81,24 +79,42 @@
 
 &i2c_5 { /* BLSP2 QUP1 (NFC) */
 	status = "ok";
-	nq@28 {
-		compatible = "qcom,nq-nci";
+//	nq@28 {
+//		compatible = "qcom,nq-nci";
+//		reg = <0x28>;
+//		qcom,nq-irq = <&tlmm 17 0x00>;
+//		qcom,nq-ven = <&tlmm 16 0x00>;
+//		qcom,nq-firm = <&tlmm 130 0x00>;
+//		qcom,nq-clkreq = <&pm8953_gpios 2 0x00>;
+//		qcom,nq-esepwr = <&tlmm 93 0x00>;
+//		interrupt-parent = <&tlmm>;
+//		qcom,clk-src = "BBCLK2";
+//		interrupts = <17 0>;
+//		interrupt-names = "nfc_irq";
+//		pinctrl-names = "nfc_active", "nfc_suspend";
+//		pinctrl-0 = <&nfc_int_active &nfc_disable_active
+//						&nfc_clk_default>;
+//		pinctrl-1 = <&nfc_int_suspend &nfc_disable_suspend>;
+//		clocks = <&clock_gcc clk_bb_clk2_pin>;
+//		clock-names = "ref_clk";
+//	};
+	nfc@28 {
+		compatible = "sony,cxd224x-i2c";
+		status = "ok";
 		reg = <0x28>;
-		qcom,nq-irq = <&tlmm 17 0x00>;
-		qcom,nq-ven = <&tlmm 16 0x00>;
-		qcom,nq-firm = <&tlmm 130 0x00>;
-		qcom,nq-clkreq = <&pm8953_gpios 2 0x00>;
-		qcom,nq-esepwr = <&tlmm 93 0x00>;
+		clock-frequency = <400000>;
+		sony,nfc_int = <&tlmm 130 0x00>;
+		sony,nfc_rst = <&tlmm 125 0x00>;
+		sony,nfc_wake = <&tlmm 16 0x00>;
 		interrupt-parent = <&tlmm>;
-		qcom,clk-src = "BBCLK2";
-		interrupts = <17 0>;
+		interrupts = <130 2>;  /* 1 = low-to-high edge triggered
+					2 = high-to-low edge triggered
+					4 = active high level-sensitive
+					8 = active low level-sensitive */
 		interrupt-names = "nfc_irq";
-		pinctrl-names = "nfc_active", "nfc_suspend";
-		pinctrl-0 = <&nfc_int_active &nfc_disable_active
-						&nfc_clk_default>;
-		pinctrl-1 = <&nfc_int_suspend &nfc_disable_suspend>;
-		clocks = <&clock_gcc clk_bb_clk2_pin>;
-		clock-names = "ref_clk";
+		pinctrl-names = "nfc_active";
+		pinctrl-0 = <&nfc_gpio130_default &nfc_gpio125_default
+						&nfc_gpio16_active>;
 	};
 };
 

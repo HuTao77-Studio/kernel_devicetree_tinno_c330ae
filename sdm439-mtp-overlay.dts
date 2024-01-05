@@ -18,5 +18,5 @@
 
 / {
 	model = "MTP";
-	qcom,board-id = <8 1>;
+	qcom,board-id = <8 0>;
 };
